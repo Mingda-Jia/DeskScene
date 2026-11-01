@@ -1,0 +1,30 @@
+<Window x:Class="DeskScene.SaveDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:DeskScene"
+        Icon="/icon.ico" Width="480" SizeToContent="Height"
+        ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+  <StackPanel Margin="24,20">
+    <TextBlock x:Name="Heading" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,14" />
+    <TextBlock Text="Profile name" FontWeight="SemiBold" Margin="0,0,0,4" />
+    <TextBox x:Name="NameBox" />
+    <TextBlock x:Name="Error" Foreground="IndianRed" Margin="0,4,0,0" Visibility="Collapsed" />
+
+    <StackPanel x:Name="Preview">
+      <TextBlock Text="Will be recorded" FontWeight="SemiBold" Margin="0,14,0,4" />
+      <Border Style="{StaticResource Card}">
+        <DockPanel>
+          <local:LayoutView x:Name="Thumb" Width="90" Height="56" Margin="0,0,14,0" VerticalAlignment="Top" />
+          <TextBlock x:Name="Recorded" TextWrapping="Wrap" FontSize="12" />
+        </DockPanel>
+      </Border>
+      <TextBlock Text="Hotkey (optional)" FontWeight="SemiBold" Margin="0,4,0,4" />
+      <local:HotkeyBox x:Name="HotkeyInput" />
+    </StackPanel>
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+      <Button x:Name="OkButton" MinWidth="100" IsDefault="True" Style="{DynamicResource AccentButtonStyle}" Click="OnOk" />
+      <Button Content="Cancel" MinWidth="100" IsCancel="True" Margin="8,0,0,0" />
+    </StackPanel>
+  </StackPanel>
+</Window>

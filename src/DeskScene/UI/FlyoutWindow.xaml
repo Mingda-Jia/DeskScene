@@ -1,0 +1,25 @@
+<Window x:Class="DeskScene.FlyoutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DeskScene" Width="360" SizeToContent="Height"
+        WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True"
+        Deactivated="OnDeactivated" KeyDown="OnKey">
+  <DockPanel Margin="8">
+    <StackPanel DockPanel.Dock="Top" Margin="8,6,8,6">
+      <StackPanel Orientation="Horizontal">
+        <Image Source="/icon.ico" Width="20" Height="20" />
+        <TextBlock Text="DeskScene" FontWeight="SemiBold" Margin="10,0,0,0" VerticalAlignment="Center" />
+      </StackPanel>
+      <TextBlock x:Name="ActiveText" Style="{StaticResource Hint}" Margin="0,8,0,0" />
+    </StackPanel>
+    <Button DockPanel.Dock="Bottom" Content="Open manager" HorizontalAlignment="Left" Margin="8" Click="OnOpenManager" />
+    <ListBox x:Name="List" ItemTemplate="{StaticResource ProfileItem}" HorizontalContentAlignment="Stretch" BorderThickness="0"
+             Background="Transparent" MaxHeight="480" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FocusVisualStyle="{x:Null}">
+      <ListBox.ItemContainerStyle>
+        <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+          <EventSetter Event="PreviewMouseLeftButtonUp" Handler="OnPick" />
+        </Style>
+      </ListBox.ItemContainerStyle>
+    </ListBox>
+  </DockPanel>
+</Window>

@@ -1,0 +1,262 @@
+<Window x:Class="DeskScene.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:DeskScene"
+        Title="DeskScene" Icon="/icon.ico" Width="1200" Height="820" MinWidth="900" MinHeight="560"
+        WindowStartupLocation="CenterScreen">
+  <Window.Resources>
+    <Style x:Key="Nav" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Left" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="Margin" Value="0,2,0,0" />
+    </Style>
+    <Style x:Key="Row" TargetType="DockPanel">
+      <Setter Property="Margin" Value="0,4" />
+    </Style>
+    <Style x:Key="Label" TargetType="TextBlock">
+      <Setter Property="Width" Value="180" />
+      <Setter Property="Opacity" Value="0.75" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="ReadOnlyTag" TargetType="TextBlock" BasedOn="{StaticResource Hint}">
+      <Setter Property="DockPanel.Dock" Value="Right" />
+      <Setter Property="Text" Value="Recorded · read-only" />
+    </Style>
+    <Style x:Key="SettingRow" TargetType="Border" BasedOn="{StaticResource Card}">
+      <Setter Property="Margin" Value="0,0,0,4" />
+    </Style>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="290" />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+
+    <!-- Left pane: profiles, save, live view, settings -->
+    <DockPanel Margin="10,10,6,10">
+      <StackPanel DockPanel.Dock="Bottom">
+        <Button Content="Save current as new profile" Style="{DynamicResource AccentButtonStyle}" HorizontalAlignment="Stretch"
+                Padding="10,8" Margin="0,8,0,4" Click="OnSaveNew" />
+        <Button Content="Current setup (live)" Style="{StaticResource Nav}" Click="OnLive" />
+        <Button Content="Settings" Style="{StaticResource Nav}" Click="OnSettings" />
+      </StackPanel>
+      <TextBlock DockPanel.Dock="Top" Text="Profiles" Style="{StaticResource Hint}" FontWeight="SemiBold" Margin="8,4,0,6" />
+      <ListBox x:Name="ProfileList" ItemTemplate="{StaticResource ProfileItem}" HorizontalContentAlignment="Stretch"
+               BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+               SelectionChanged="OnSelect" />
+    </DockPanel>
+
+    <!-- Right pane: empty state -->
+    <StackPanel x:Name="EmptyPanel" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="420">
+      <TextBlock Text="No profiles yet" FontSize="22" FontWeight="SemiBold" HorizontalAlignment="Center" />
+      <TextBlock TextWrapping="Wrap" TextAlignment="Center" Margin="0,8,0,0" Style="{StaticResource Hint}" FontSize="14"
+                 Text="Set up your displays and audio in Windows the way you like, then click &quot;Save current as new profile&quot;." />
+    </StackPanel>
+
+    <!-- Right pane: a profile (or the live setup) -->
+    <ScrollViewer x:Name="ProfilePanel" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+      <StackPanel Margin="24,16,24,24">
+        <DockPanel>
+          <StackPanel x:Name="Actions" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top">
+            <Button Content="Apply" Style="{DynamicResource AccentButtonStyle}" MinWidth="80" Click="OnApply" />
+            <Button Content="Update from current" Margin="6,0,0,0" Click="OnUpdate" />
+            <Button Content="Rename" Margin="6,0,0,0" Click="OnRename" />
+            <Button Content="Delete" Margin="6,0,0,0" Click="OnDelete" />
+          </StackPanel>
+          <TextBlock Text="{Binding Name}" FontSize="26" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+        </DockPanel>
+        <TextBlock x:Name="Meta" Style="{StaticResource Hint}" Margin="0,2,0,12" />
+        <Border Style="{StaticResource Card}" Background="{DynamicResource SystemFillColorAttentionBackgroundBrush}">
+          <TextBlock x:Name="InfoText" TextWrapping="Wrap" />
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+          <StackPanel>
+            <DockPanel>
+              <TextBlock Style="{StaticResource ReadOnlyTag}" />
+              <TextBlock Text="Display layout" Style="{StaticResource CardTitle}" />
+            </DockPanel>
+            <local:LayoutView Monitors="{Binding Display.Monitors}" ShowNames="True" Height="200" />
+          </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+          <StackPanel>
+            <DockPanel>
+              <TextBlock Style="{StaticResource ReadOnlyTag}" />
+              <TextBlock Text="Displays" Style="{StaticResource CardTitle}" />
+            </DockPanel>
+            <ListView x:Name="Table" BorderThickness="0" Background="Transparent" Focusable="False"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+              <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                  <GridViewColumn Header="#" DisplayMemberBinding="{Binding Number}" Width="30" />
+                  <GridViewColumn Header="Device" DisplayMemberBinding="{Binding Monitor.Name}" Width="140" />
+                  <GridViewColumn Header="Connection" DisplayMemberBinding="{Binding Monitor.Connection}" Width="95" />
+                  <GridViewColumn Header="Resolution" DisplayMemberBinding="{Binding Monitor.Resolution}" Width="100" />
+                  <GridViewColumn Header="Refresh" DisplayMemberBinding="{Binding Monitor.Refresh}" Width="75" />
+                  <GridViewColumn Header="Scale" DisplayMemberBinding="{Binding Monitor.ScaleText}" Width="55" />
+                  <GridViewColumn Header="Orientation" DisplayMemberBinding="{Binding Monitor.Orientation}" Width="105" />
+                  <GridViewColumn Header="HDR" DisplayMemberBinding="{Binding Monitor.HdrText}" Width="55" />
+                  <GridViewColumn Header="Role" DisplayMemberBinding="{Binding Monitor.Role}" Width="130" />
+                </GridView>
+              </ListView.View>
+            </ListView>
+          </StackPanel>
+        </Border>
+
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+
+          <Border Style="{StaticResource Card}">
+            <StackPanel>
+              <DockPanel>
+                <TextBlock Style="{StaticResource ReadOnlyTag}" />
+                <TextBlock Text="Audio" Style="{StaticResource CardTitle}" />
+              </DockPanel>
+              <DockPanel Style="{StaticResource Row}">
+                <TextBlock Text="Output (default)" Style="{StaticResource Label}" />
+                <TextBlock Text="{Binding Audio.Output.Name, FallbackValue=None, TargetNullValue=None}" TextWrapping="Wrap" />
+              </DockPanel>
+              <DockPanel Style="{StaticResource Row}">
+                <TextBlock Text="Output (communications)" Style="{StaticResource Label}" />
+                <TextBlock Text="{Binding Audio.Communications.Name, FallbackValue=None, TargetNullValue=None}" TextWrapping="Wrap" />
+              </DockPanel>
+              <DockPanel Style="{StaticResource Row}">
+                <TextBlock Text="Input (default)" Style="{StaticResource Label}" />
+                <TextBlock Text="{Binding Audio.Input.Name, FallbackValue=None, TargetNullValue=None}" TextWrapping="Wrap" />
+              </DockPanel>
+              <DockPanel Style="{StaticResource Row}">
+                <TextBlock Text="Output volume" Style="{StaticResource Label}" />
+                <TextBlock Text="{Binding Audio.Volume, StringFormat={}{0}%, TargetNullValue=—}" />
+              </DockPanel>
+            </StackPanel>
+          </Border>
+
+          <Border x:Name="OptionsCard" Grid.Column="2" Style="{StaticResource Card}" Binding.SourceUpdated="OnOptionChanged">
+            <StackPanel>
+              <DockPanel>
+                <TextBlock Style="{StaticResource Hint}" DockPanel.Dock="Right" Text="Editable" />
+                <TextBlock Text="Profile options" Style="{StaticResource CardTitle}" />
+              </DockPanel>
+              <DockPanel Style="{StaticResource Row}">
+                <TextBlock Text="Global hotkey" Style="{StaticResource Label}" />
+                <local:HotkeyBox Text="{Binding Options.Hotkey, NotifyOnSourceUpdated=True}" />
+              </DockPanel>
+              <DockPanel Style="{StaticResource Row}">
+                <TextBlock Text="Show in tray menus" Style="{StaticResource Label}" />
+                <CheckBox IsChecked="{Binding Options.ShowInTray, NotifyOnSourceUpdated=True}" />
+              </DockPanel>
+              <DockPanel Style="{StaticResource Row}">
+                <TextBlock Text="If a device is off / missing" Style="{StaticResource Label}" />
+                <ComboBox SelectedIndex="{Binding Options.MissingDeviceIndex, NotifyOnSourceUpdated=True}">
+                  <ComboBoxItem Content="Use default" />
+                  <ComboBoxItem Content="Ask me" />
+                  <ComboBoxItem Content="Apply without it" />
+                  <ComboBoxItem Content="Cancel" />
+                </ComboBox>
+              </DockPanel>
+              <DockPanel Style="{StaticResource Row}">
+                <TextBlock Text="Ask to keep changes" Style="{StaticResource Label}" />
+                <CheckBox IsChecked="{Binding Options.ConfirmChanges, NotifyOnSourceUpdated=True}" />
+              </DockPanel>
+            </StackPanel>
+          </Border>
+        </Grid>
+      </StackPanel>
+    </ScrollViewer>
+
+    <!-- Right pane: settings -->
+    <ScrollViewer x:Name="SettingsPanel" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+      <StackPanel Margin="24,16,24,24">
+        <TextBlock Text="Settings" FontSize="26" FontWeight="SemiBold" Margin="0,0,0,14" />
+
+        <Border Style="{StaticResource SettingRow}">
+          <DockPanel>
+            <CheckBox x:Name="AutoStartBox" DockPanel.Dock="Right" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+            <StackPanel>
+              <TextBlock Text="Start with Windows" />
+              <TextBlock Text="Launch silently to the tray when you sign in" Style="{StaticResource Hint}" />
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{StaticResource SettingRow}">
+          <DockPanel>
+            <ComboBox x:Name="StartupProfileBox" DockPanel.Dock="Right" MinWidth="200" SelectionChanged="OnSettingChanged" />
+            <StackPanel>
+              <TextBlock Text="Apply a profile at startup" />
+              <TextBlock Text="For example, always return to your desk layout after a reboot" Style="{StaticResource Hint}" />
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{StaticResource SettingRow}">
+          <DockPanel>
+            <ComboBox x:Name="TrayClickBox" DockPanel.Dock="Right" MinWidth="200" SelectionChanged="OnSettingChanged">
+              <ComboBoxItem Content="Show quick-switch list" />
+              <ComboBoxItem Content="Open manager" />
+            </ComboBox>
+            <StackPanel>
+              <TextBlock Text="Tray icon left-click" />
+              <TextBlock Text="What happens when you click the tray icon" Style="{StaticResource Hint}" />
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{StaticResource SettingRow}">
+          <DockPanel>
+            <CheckBox x:Name="HotkeysBox" DockPanel.Dock="Right" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+            <StackPanel>
+              <TextBlock Text="Global hotkeys" />
+              <TextBlock Text="Switch profiles from anywhere with each profile's hotkey" Style="{StaticResource Hint}" />
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{StaticResource SettingRow}">
+          <DockPanel>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+              <ComboBox x:Name="RevertBox" MinWidth="120" Margin="0,0,12,0" SelectionChanged="OnSettingChanged" />
+              <CheckBox x:Name="ConfirmBox" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+            </StackPanel>
+            <StackPanel>
+              <TextBlock Text="Ask to keep changes after switching" />
+              <TextBlock Text="Reverts automatically if not confirmed in time" Style="{StaticResource Hint}" />
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{StaticResource SettingRow}">
+          <DockPanel>
+            <ComboBox x:Name="MissingBox" DockPanel.Dock="Right" MinWidth="200" SelectionChanged="OnSettingChanged">
+              <ComboBoxItem Content="Ask me" />
+              <ComboBoxItem Content="Apply without it" />
+              <ComboBoxItem Content="Cancel" />
+            </ComboBox>
+            <StackPanel>
+              <TextBlock Text="If a device is off / missing (default)" />
+              <TextBlock Text="Used by profiles set to &quot;Use default&quot;" Style="{StaticResource Hint}" />
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{StaticResource SettingRow}">
+          <DockPanel>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+              <Button Content="Open folder" Click="OnOpenFolder" />
+              <Button Content="Export…" Margin="6,0,0,0" Click="OnExport" />
+              <Button Content="Import…" Margin="6,0,0,0" Click="OnImport" />
+            </StackPanel>
+            <StackPanel>
+              <TextBlock Text="Profiles file" />
+              <TextBlock x:Name="FilePathText" Style="{StaticResource Hint}" TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+          </DockPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</Window>

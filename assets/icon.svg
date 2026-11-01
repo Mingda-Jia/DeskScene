@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="256" height="256">
+  <!-- DeskScene icon: a deck of saved setups ("scene cards"); the front card is the active one. -->
+  <rect x="7" y="1.5" width="15.5" height="11" rx="2" fill="#9CC3EA"/>
+  <rect x="4.2" y="4.8" width="15.5" height="11" rx="2" fill="#4A90D9"/>
+  <rect x="1.5" y="8.2" width="15.5" height="11" rx="2" fill="#005FB8"/>
+  <rect x="4.5" y="11" width="9.5" height="5.4" rx="0.8" fill="none" stroke="#FFFFFF" stroke-width="1.5"/>
+</svg>
