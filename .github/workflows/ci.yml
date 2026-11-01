@@ -24,8 +24,9 @@ jobs:
       - name: Publish single-file exe
         shell: pwsh
         run: |
-          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') { @("-p:Version=$($env:GITHUB_REF_NAME.TrimStart('v'))") } else { @() }
-          dotnet publish src/DeskScene -c Release -r win-x64 -p:PublishSingleFile=true @version -o publish
+          $props = @()
+          if ($env:GITHUB_REF_TYPE -eq 'tag') { $props += "-p:Version=$($env:GITHUB_REF_NAME.TrimStart('v'))" }
+          dotnet publish src/DeskScene -c Release -r win-x64 -p:PublishSingleFile=true $props -o publish
 
       - uses: actions/upload-artifact@v7
         with:
